@@ -52,6 +52,10 @@ class Server {
         wsClient.on("message", (message) => {
             const m = this.bson.deserialize(message, { promoteBuffers: true });
             this.log("received: ", m);
+            if (!this.requests[m.hash]) {
+                this.log("connection already closed");
+                return;
+            }
             this.requests[m.hash].message(m);
         });
         this.wsClient = wsClient;
